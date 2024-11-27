@@ -6,9 +6,8 @@ const pool = require('../../config/db');
     try{
       const text = 'INSERT INTO products (product_name, product_article) VALUES ($1, $2) RETURNING id ';
       const values = [name, article];
-      const product = await pool.query(text, values);
-      const idProduct = product.rows[0].id;
-      if(idProduct) res.status(201).send(`product added: id ${idProduct}`);
+      const productId = await pool.query(text, values);
+      res.status(201).send(`product added: id ${productId.rows[0].id}`);
     }
     catch(err){
       console.log(err.message)
@@ -27,12 +26,47 @@ const pool = require('../../config/db');
   count = Number(count)
   try{  
     const counts = await pool.query(text, values);
-    const idProduct = counts.rows[0].id;
-    if(idProduct) res.status(201).send(`product added: id ${idProduct}`);
+    res.status(201).send(`product added: id ${counts.rows[0].id}`);
   }
   catch(err){
     console.log(err.message)
     res.status(507).json({"message": "error"}); 
+  }
+}
+
+const subtractCount = async(req, res) => {
+  let { article, value } = req.body;
+  if(!req.body) res.status(400).send("Invalid client request");
+  let num = Number(value);
+  let articleProduct = Number(article);
+  const text = 'UPDATE product_in_shops SET product_count = product_count-($1)'+ 
+    'WHERE article_product = ($2) RETURNING product_count';
+  const items = [num, articleProduct];
+  try{  
+    const newCount = await pool.query(text, items);
+    res.status(201).send(`product update: id ${newCount.rows[0].product_count}`);
+  }
+  catch(err){
+    console.log(err.message)
+    res.status(500).json({"message": "error"}); 
+  }
+}
+
+const addCount = async(req, res) => {
+  let { article, value } = req.body;
+  if(!req.body) res.status(400).send("Invalid client request");
+  let num = Number(value);
+  let articleProduct = Number(article);
+  const text = 'UPDATE product_in_shops SET product_count = product_count+($1)'+ 
+    'WHERE article_product = ($2) RETURNING product_count';
+  const items = [num, articleProduct];
+  try{  
+    const newCount = await pool.query(text, items);
+    res.status(201).send(`product update: id ${newCount.rows[0].product_count}`);
+  }
+  catch(err){
+    console.log(err.message)
+    res.status(500).json({"message": "error"}); 
   }
 }
 
@@ -57,34 +91,7 @@ const getCount = async(req, res) => {
   //     response.status(200).json(results.rows)
   //   })
   // }
-  
-  // const createUser = (request, response) => {
-  //   const { name, email } = request.body
-  
-  //   pool.query('INSERT INTO users (name, email) VALUES ($1, $2)', [name, email], (error, results) => {
-  //     if (error) {
-  //       throw error
-  //     }
-  //     response.status(201).send(`User added with ID: ${results.insertId}`)
-  //   })
-  // }
-  
-  // const updateUser = (request, response) => {
-  //   const id = parseInt(request.params.id)
-  //   const { name, email } = request.body
-  
-  //   pool.query(
-  //     'UPDATE users SET name = $1, email = $2 WHERE id = $3',
-  //     [name, email, id],
-  //     (error, results) => {
-  //       if (error) {
-  //         throw error
-  //       }
-  //       response.status(200).send(`User modified with ID: ${id}`)
-  //     }
-  //   )
-  // }
-  
+ 
   // const deleteUser = (request, response) => {
   //   const id = parseInt(request.params.id)
   
@@ -100,5 +107,7 @@ const getCount = async(req, res) => {
     getCount,
     createProduct,
     createCount,
+    subtractCount,
+    addCount,
   }
   

@@ -8,6 +8,7 @@ app.use(express.json());
 app.get('/product', router);
 app.post('/product/create', router);
 app.post('/product/count', router);
+app.post('/product/add', router);
 
 app.listen(4444, (err) => {
     if(err){
