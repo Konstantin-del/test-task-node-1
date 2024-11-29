@@ -10,6 +10,7 @@ app.post('/product/create', router);
 app.post('/product/count', router);
 app.post('/product/subtract', router);
 app.post('/product/add', router);
+app.get('/product/history', router);
 
 //app.get('/history', router);
 

@@ -12,12 +12,12 @@ CREATE TABLE IF NOT EXISTS product_count (
 );
 
 CREATE TABLE IF NOT EXISTS product_history_action (
-	article integer PRIMARY KEY NOT NULL,
+	id serial PRIMARY KEY,
+	article integer NOT NULL,
 	shop_id integer NOT NULL,
 	date_change timestamp NOT NULL,
 	count integer NOT NULL,
-	count_in_order integer,
-	new_caunt integer
+	count_in_order integer	
 );
 
 ALTER TABLE product_count 
