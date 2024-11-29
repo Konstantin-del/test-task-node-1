@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS product_history_action (
 	shop_id integer NOT NULL,
 	date_change timestamp NOT NULL,
 	count integer NOT NULL,
-	count_in_order integer	
+	action_product character(20) NOT NULL
 );
 
 ALTER TABLE product_count 
